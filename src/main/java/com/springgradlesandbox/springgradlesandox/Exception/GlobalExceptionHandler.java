@@ -28,12 +28,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<List<ErrorResponse>> handleBadRequest(MethodArgumentNotValidException exception) {
         List<ErrorResponse> exceptionResponse = exception.getBindingResult().getAllErrors()
                 .stream()
-                .map(error ->
-                    ErrorResponse.builder()
+                .map(error -> {
+                    ErrorResponse errorResponse = ErrorResponse.builder()
                         .exceptionType(error.getClass().getSimpleName())
-                        .fieldName(((FieldError) error).getField())
                         .message(error.getDefaultMessage())
-                    .build())
+                    .build();
+                    if (error instanceof FieldError) errorResponse.setFieldName(((FieldError) error).getField());
+                    return errorResponse;
+                })
                 .collect(Collectors.toList());
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
