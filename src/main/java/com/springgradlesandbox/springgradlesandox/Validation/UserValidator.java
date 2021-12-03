@@ -1,6 +1,6 @@
 package com.springgradlesandbox.springgradlesandox.Validation;
 
-import com.springgradlesandbox.springgradlesandox.Domain.UserDTO;
+import com.springgradlesandbox.springgradlesandox.DTO.UserDTO;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

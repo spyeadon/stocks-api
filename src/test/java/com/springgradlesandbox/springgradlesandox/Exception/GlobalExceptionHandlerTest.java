@@ -1,7 +1,7 @@
 package com.springgradlesandbox.springgradlesandox.Exception;
 
 import com.springgradlesandbox.springgradlesandox.Controller.UserController;
-import com.springgradlesandbox.springgradlesandox.Domain.UserDTO;
+import com.springgradlesandbox.springgradlesandox.DTO.UserDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.MethodParameter;

@@ -1,4 +1,4 @@
-package com.springgradlesandbox.springgradlesandox.Domain;
+package com.springgradlesandbox.springgradlesandox.DTO;
 
 import com.springgradlesandbox.springgradlesandox.Validation.ValidUser;
 import lombok.*;

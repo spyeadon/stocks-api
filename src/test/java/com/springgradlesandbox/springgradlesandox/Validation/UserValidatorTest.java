@@ -1,6 +1,6 @@
 package com.springgradlesandbox.springgradlesandox.Validation;
 
-import com.springgradlesandbox.springgradlesandox.Domain.UserDTO;
+import com.springgradlesandbox.springgradlesandox.DTO.UserDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -14,7 +14,7 @@ class UserValidatorTest {
     private UserValidator userValidator;
 
     @Mock
-    ConstraintValidatorContext context;
+    private ConstraintValidatorContext context;
 
     private UserDTO user;
 

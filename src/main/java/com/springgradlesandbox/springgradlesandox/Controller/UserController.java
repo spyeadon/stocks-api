@@ -1,6 +1,6 @@
 package com.springgradlesandbox.springgradlesandox.Controller;
 
-import com.springgradlesandbox.springgradlesandox.Domain.UserDTO;
+import com.springgradlesandbox.springgradlesandox.DTO.UserDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
