@@ -23,7 +23,7 @@ class UserValidatorTest {
         userValidator = new UserValidator();
         user = UserDTO.builder()
                 .accountNumber(12345)
-                .clientName("test client")
+                .name("test client")
             .build();
     }
 

@@ -41,7 +41,7 @@ class GlobalExceptionHandlerTest {
         BindingResult result = new BeanPropertyBindingResult(new UserDTO(), "userDTO");
         result.addError(new FieldError("userDTO", "clientName", "Invalid argument for field: clientName"));
 
-        MethodArgumentNotValidException exception = new MethodArgumentNotValidException(new MethodParameter(UserController.class.getMethod("testValidation", UserDTO.class), 0), result);
+        MethodArgumentNotValidException exception = new MethodArgumentNotValidException(new MethodParameter(UserController.class.getMethod("createUser", UserDTO.class), 0), result);
 
         ResponseEntity<List<ErrorResponse>> response = globalExceptionHandler.handleBadRequest(exception);
 

@@ -37,15 +37,15 @@ class UserControllerTest {
     }
 
     @Test
-    void testValidation_withValidRequestBody_willResponseWith200OK() throws Exception {
+    void createUser_withValidRequestBody_willResponseWith200OK() throws Exception {
         UserDTO request = UserDTO.builder()
                 .accountNumber(12345678)
-                .clientName("Test Client")
+                .name("Test Client")
                 .memberNumber("12345678")
                 .memberId("12345")
                 .build();
 
-        mockMvc.perform(post("/testValidation")
+        mockMvc.perform(post("/createUser")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(content().json(objectMapper.writeValueAsString(request)))
@@ -53,26 +53,26 @@ class UserControllerTest {
     }
 
     @Test
-    void testValidation_withNullAccountNumber_willThrowException400BadRequest() throws Exception {
+    void createUser_withNullAccountNumber_willThrowException400BadRequest() throws Exception {
         UserDTO request = UserDTO.builder()
                 .accountNumber(null)
-                .clientName("Test Client")
+                .name("Test Client")
                 .build();
 
-        mockMvc.perform(post("/testValidation")
+        mockMvc.perform(post("/createUser")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void testValidation_withNullClientName_willThrowException400BadRequest() throws Exception {
+    void createUser_withNullClientName_willThrowException400BadRequest() throws Exception {
         UserDTO request = UserDTO.builder()
                 .accountNumber(12345678)
-                .clientName(null)
+                .name(null)
                 .build();
 
-        mockMvc.perform(post("/testValidation")
+        mockMvc.perform(post("/createUser")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());

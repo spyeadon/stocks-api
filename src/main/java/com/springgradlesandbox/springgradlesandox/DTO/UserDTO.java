@@ -16,9 +16,9 @@ import javax.validation.constraints.Size;
 public class UserDTO {
     @NotNull(message = "Account Number must not be null")
     private Integer accountNumber;
-    @NotBlank(message = "Client Name must not be blank")
-    @NotNull(message = "Client Name must not be null")
-    private String clientName;
+    @NotBlank(message = "Name must not be blank")
+    @NotNull(message = "Name must not be null")
+    private String name;
     @Pattern(regexp = "^[0-9]*$", message = "MemberNumber must only integers")
     @Size(min = 8, max = 8, message = "MemberNumber must be 8 digits")
     private String memberNumber;
