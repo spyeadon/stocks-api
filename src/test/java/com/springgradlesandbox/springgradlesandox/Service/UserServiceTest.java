@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -44,6 +45,8 @@ class UserServiceTest {
                 .memberNumber("12345678")
                 .name("tester1")
                 .accountNumber(123)
+                .createdDate(LocalDateTime.now())
+                .lastModifiedDate(LocalDateTime.now())
                 .build();
     }
 
@@ -59,8 +62,12 @@ class UserServiceTest {
         assertThat(savedUserDTO.getMemberNumber()).isEqualTo("12345678");
         assertThat(savedUserDTO.getName()).isEqualTo("tester1");
         assertThat(savedUserDTO.getId()).matches(UUID_REGEX_PATTERN);
+        assertThat(savedUserDTO.getCreatedDate()).isBefore(LocalDateTime.now());
+        assertThat(savedUserDTO.getLastModifiedDate()).isBefore(LocalDateTime.now());
 
         savedUser.setId(null);
+        savedUser.setCreatedDate(null);
+        savedUser.setLastModifiedDate(null);
         verify(userDAO, times(1)).save(savedUser);
     }
 

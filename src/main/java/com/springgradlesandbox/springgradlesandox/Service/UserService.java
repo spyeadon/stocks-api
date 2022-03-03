@@ -27,6 +27,8 @@ public class UserService {
                 .name(savedUser.getName())
                 .memberId(user.getMemberId())
                 .memberNumber(user.getMemberNumber())
+                .createdDate(savedUser.getCreatedDate())
+                .lastModifiedDate(savedUser.getLastModifiedDate())
                 .build();
     }
 }
