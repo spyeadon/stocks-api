@@ -52,7 +52,7 @@ class UserControllerTest {
                 .memberId("12345")
                 .build();
 
-        mockMvc.perform(post("/createUser")
+        mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)));
 
@@ -70,7 +70,7 @@ class UserControllerTest {
 
         when(userService.createUser(any(UserDTO.class))).thenReturn(request);
 
-        mockMvc.perform(post("/createUser")
+        mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(content().json(objectMapper.writeValueAsString(request)))
@@ -84,7 +84,7 @@ class UserControllerTest {
                 .name("Test Client")
                 .build();
 
-        mockMvc.perform(post("/createUser")
+        mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
@@ -97,7 +97,7 @@ class UserControllerTest {
                 .name(null)
                 .build();
 
-        mockMvc.perform(post("/createUser")
+        mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());

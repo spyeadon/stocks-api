@@ -18,7 +18,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping(value = "/createUser", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserDTO> createUser(@Valid @RequestBody UserDTO request) {
         return new ResponseEntity<>(userService.createUser(request), HttpStatus.OK);
     }
