@@ -1,8 +1,8 @@
-package com.springgradlesandbox.springgradlesandox.Service;
+package com.stocksapi.Service;
 
-import com.springgradlesandbox.springgradlesandox.DTO.UserDTO;
-import com.springgradlesandbox.springgradlesandox.Persistence.DAO.UserDAO;
-import com.springgradlesandbox.springgradlesandox.Persistence.Entity.UserEntity;
+import com.stocksapi.DTO.UserDTO;
+import com.stocksapi.Persistence.DAO.UserDAO;
+import com.stocksapi.Persistence.Entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

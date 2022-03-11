@@ -1,6 +1,6 @@
-package com.springgradlesandbox.springgradlesandox.Validation;
+package com.stocksapi.Validation;
 
-import com.springgradlesandbox.springgradlesandox.DTO.UserDTO;
+import com.stocksapi.DTO.UserDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;

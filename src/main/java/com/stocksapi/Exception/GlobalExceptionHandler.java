@@ -1,4 +1,4 @@
-package com.springgradlesandbox.springgradlesandox.Exception;
+package com.stocksapi.Exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

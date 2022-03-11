@@ -1,4 +1,4 @@
-package com.springgradlesandbox.springgradlesandox.Exception;
+package com.stocksapi.Exception;
 
 public class APIException extends RuntimeException {
     APIException(String message) {

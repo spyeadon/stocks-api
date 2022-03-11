@@ -1,4 +1,4 @@
-package com.springgradlesandbox.springgradlesandox.Validation;
+package com.stocksapi.Validation;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

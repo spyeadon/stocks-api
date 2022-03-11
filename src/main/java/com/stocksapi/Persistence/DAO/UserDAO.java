@@ -1,6 +1,6 @@
-package com.springgradlesandbox.springgradlesandox.Persistence.DAO;
+package com.stocksapi.Persistence.DAO;
 
-import com.springgradlesandbox.springgradlesandox.Persistence.Entity.UserEntity;
+import com.stocksapi.Persistence.Entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

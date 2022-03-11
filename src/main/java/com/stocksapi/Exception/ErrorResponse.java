@@ -1,4 +1,4 @@
-package com.springgradlesandbox.springgradlesandox.Exception;
+package com.stocksapi.Exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

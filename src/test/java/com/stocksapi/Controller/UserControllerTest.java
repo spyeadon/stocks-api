@@ -1,9 +1,9 @@
-package com.springgradlesandbox.springgradlesandox.Controller;
+package com.stocksapi.Controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.springgradlesandbox.springgradlesandox.DTO.UserDTO;
-import com.springgradlesandbox.springgradlesandox.Exception.GlobalExceptionHandler;
-import com.springgradlesandbox.springgradlesandox.Service.UserService;
+import com.stocksapi.DTO.UserDTO;
+import com.stocksapi.Exception.GlobalExceptionHandler;
+import com.stocksapi.Service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

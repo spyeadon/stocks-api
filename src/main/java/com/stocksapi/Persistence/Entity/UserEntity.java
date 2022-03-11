@@ -1,4 +1,4 @@
-package com.springgradlesandbox.springgradlesandox.Persistence.Entity;
+package com.stocksapi.Persistence.Entity;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;

@@ -1,6 +1,6 @@
-package com.springgradlesandbox.springgradlesandox.DTO;
+package com.stocksapi.DTO;
 
-import com.springgradlesandbox.springgradlesandox.Validation.ValidUser;
+import com.stocksapi.Validation.ValidUser;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;

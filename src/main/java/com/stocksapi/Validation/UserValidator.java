@@ -1,6 +1,6 @@
-package com.springgradlesandbox.springgradlesandox.Validation;
+package com.stocksapi.Validation;
 
-import com.springgradlesandbox.springgradlesandox.DTO.UserDTO;
+import com.stocksapi.DTO.UserDTO;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

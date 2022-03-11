@@ -1,7 +1,7 @@
-package com.springgradlesandbox.springgradlesandox.Controller;
+package com.stocksapi.Controller;
 
-import com.springgradlesandbox.springgradlesandox.DTO.UserDTO;
-import com.springgradlesandbox.springgradlesandox.Service.UserService;
+import com.stocksapi.DTO.UserDTO;
+import com.stocksapi.Service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
