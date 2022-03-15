@@ -15,18 +15,20 @@ public class UserService {
     }
 
     public UserDTO createUser(UserDTO user) {
-        UserEntity savedUser = userDAO.save(UserEntity.builder()
-                        .accountNumber(user.getAccountNumber())
-                        .name(user.getName())
-                        .memberId(user.getMemberId())
-                        .memberNumber(user.getMemberNumber())
-                .build());
+        UserEntity savedUser = userDAO.save(
+            UserEntity.builder()
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .username(user.getUsername())
+                .password(user.getPassword())
+            .build());
+
         return UserDTO.builder()
                 .id(savedUser.getId())
-                .accountNumber(savedUser.getAccountNumber())
-                .name(savedUser.getName())
-                .memberId(user.getMemberId())
-                .memberNumber(user.getMemberNumber())
+                .firstName(savedUser.getFirstName())
+                .lastName(savedUser.getLastName())
+                .username(savedUser.getUsername())
+                .password(savedUser.getPassword())
                 .createdDate(savedUser.getCreatedDate())
                 .lastModifiedDate(savedUser.getLastModifiedDate())
                 .build();

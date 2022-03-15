@@ -1,6 +1,9 @@
 package com.stocksapi.Persistence.Entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -23,13 +26,13 @@ public class UserEntity {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
-    private String name;
+    private String username;
 
-    private Integer accountNumber;
+    private String firstName;
 
-    private String memberId;
+    private String lastName;
 
-    private String memberNumber;
+    private String password; // TODO save in DB as password hash
 
     @CreatedDate
     private LocalDateTime createdDate;

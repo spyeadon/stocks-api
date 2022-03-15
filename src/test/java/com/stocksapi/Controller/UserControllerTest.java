@@ -28,6 +28,8 @@ class UserControllerTest {
 
     ObjectMapper objectMapper;
 
+    private UserDTO userRequestBody;
+
     @Mock
     private UserService userService;
 
@@ -41,65 +43,89 @@ class UserControllerTest {
                     .standaloneSetup(userController)
                     .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
+
+        userRequestBody = UserDTO.builder()
+                .firstName("tester")
+                .lastName("testerson")
+                .username("test123")
+                .password("pa55w0rd098")
+            .build();
     }
 
     @Test
     void createUser_callsUserService() throws Exception {
         UserDTO request = UserDTO.builder()
-                .accountNumber(12345678)
-                .name("Test Client")
-                .memberNumber("12345678")
-                .memberId("12345")
+                .firstName("tester")
+                .lastName("testerson")
+                .username("test123")
+                .password("pa55w0rd098")
                 .build();
 
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)));
+                        .content(objectMapper.writeValueAsString(userRequestBody)));
 
         Mockito.verify(userService, Mockito.times(1)).createUser(request);
     }
 
     @Test
     void createUser_withValidRequestBody_willRespondWithResourceAnd200OK() throws Exception {
-        UserDTO request = UserDTO.builder()
-                .accountNumber(12345678)
-                .name("Test Client")
-                .memberNumber("12345678")
-                .memberId("12345")
-                .build();
-
-        when(userService.createUser(any(UserDTO.class))).thenReturn(request);
+        when(userService.createUser(any(UserDTO.class))).thenReturn(userRequestBody);
 
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(content().json(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(userRequestBody)))
+                .andExpect(content().json(objectMapper.writeValueAsString(userRequestBody)))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void createUser_withNullAccountNumber_willThrowException400BadRequest() throws Exception {
-        UserDTO request = UserDTO.builder()
-                .accountNumber(null)
-                .name("Test Client")
-                .build();
+    void createUser_withNullUsername_willThrowException400BadRequest() throws Exception {
+        userRequestBody.setUsername(null);
 
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(userRequestBody)))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void createUser_withNullClientName_willThrowException400BadRequest() throws Exception {
-        UserDTO request = UserDTO.builder()
-                .accountNumber(12345678)
-                .name(null)
-                .build();
+    void createUser_withNullFirstName_willThrowException400BadRequest() throws Exception {
+        userRequestBody.setFirstName(null);
 
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(objectMapper.writeValueAsString(userRequestBody)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createUser_withNullLastName_willThrowException400BadRequest() throws Exception {
+        userRequestBody.setLastName(null);
+
+        mockMvc.perform(post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequestBody)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createUser_withNullPassword_willThrowException400BadRequest() throws Exception {
+        userRequestBody.setPassword(null);
+
+        mockMvc.perform(post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequestBody)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createUser_withShortPassword_willThrowException400BadRequest() throws Exception {
+        userRequestBody.setPassword("Pa55w0r");
+
+        mockMvc.perform(post("/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRequestBody)))
                 .andExpect(status().isBadRequest());
     }
 }

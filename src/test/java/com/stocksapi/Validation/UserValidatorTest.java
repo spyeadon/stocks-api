@@ -7,7 +7,8 @@ import org.mockito.Mock;
 
 import javax.validation.ConstraintValidatorContext;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UserValidatorTest {
 
@@ -22,35 +23,23 @@ class UserValidatorTest {
     void setUp() {
         userValidator = new UserValidator();
         user = UserDTO.builder()
-                .accountNumber(12345)
-                .name("test client")
+                .firstName("tester")
+                .lastName("testerson")
+                .username("test123")
+                .password("pa55w0rd098")
             .build();
     }
 
     @Test
-    void isValid_whenUserHasMemberIDButNotMemberNumber_returnsTrue() {
-        user.setMemberId("1234567890");
-        user.setMemberNumber(null);
-
+    void isValid_whenUsernameAndPasswordAreAllNumbersAndLetters_returnsTrue() {
         boolean isValid = userValidator.isValid(user, context);
 
         assertTrue(isValid);
     }
 
     @Test
-    void isValid_whenUserHasMemberNumberButNotMemberId_returnsTrue() {
-        user.setMemberNumber("123456798");
-        user.setMemberId(null);
-
-        boolean isValid = userValidator.isValid(user, context);
-
-        assertTrue(isValid);
-    }
-
-    @Test
-    void isValid_whenUserHasNullMemberIdAndMemberNumber_returnsFalse() {
-        user.setMemberNumber(null);
-        user.setMemberId(null);
+    void isValid_whenUsernameHasSpecialCharacters_returnsFalse() {
+        user.setUsername("***InvalidUsername!!!!");
 
         boolean isValid = userValidator.isValid(user, context);
 
@@ -58,9 +47,8 @@ class UserValidatorTest {
     }
 
     @Test
-    void isValid_whenUserHasBlankMemberIdAndMemberNumber_returnsFalse() {
-        user.setMemberNumber("");
-        user.setMemberId("");
+    void isValid_whenPasswordHasSpecialCharacters_returnsFalse() {
+        user.setPassword("***InvalidPassword!!!!");
 
         boolean isValid = userValidator.isValid(user, context);
 

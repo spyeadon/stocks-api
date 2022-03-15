@@ -33,18 +33,18 @@ class UserServiceTest {
     @BeforeEach
     void setup() {
         unsavedUserDTO = UserDTO.builder()
-                .memberId("12345")
-                .memberNumber("12345678")
-                .name("tester1")
-                .accountNumber(123)
+                .firstName("tester")
+                .lastName("testerson")
+                .username("test123")
+                .password("pa55w0rd098")
                 .build();
 
         savedUser = UserEntity.builder()
                 .id(UUID.randomUUID().toString())
-                .memberId("12345")
-                .memberNumber("12345678")
-                .name("tester1")
-                .accountNumber(123)
+                .firstName("tester")
+                .lastName("testerson")
+                .username("test123")
+                .password("pa55w0rd098")
                 .createdDate(LocalDateTime.now())
                 .lastModifiedDate(LocalDateTime.now())
                 .build();
@@ -57,10 +57,10 @@ class UserServiceTest {
 
         UserDTO savedUserDTO = userService.createUser(unsavedUserDTO);
 
-        assertThat(savedUserDTO.getAccountNumber()).isEqualTo(123);
-        assertThat(savedUserDTO.getMemberId()).isEqualTo("12345");
-        assertThat(savedUserDTO.getMemberNumber()).isEqualTo("12345678");
-        assertThat(savedUserDTO.getName()).isEqualTo("tester1");
+        assertThat(savedUserDTO.getFirstName()).isEqualTo("tester");
+        assertThat(savedUserDTO.getLastName()).isEqualTo("testerson");
+        assertThat(savedUserDTO.getUsername()).isEqualTo("test123");
+        assertThat(savedUserDTO.getPassword()).isEqualTo("pa55w0rd098");
         assertThat(savedUserDTO.getId()).matches(UUID_REGEX_PATTERN);
         assertThat(savedUserDTO.getCreatedDate()).isBefore(LocalDateTime.now());
         assertThat(savedUserDTO.getLastModifiedDate()).isBefore(LocalDateTime.now());
