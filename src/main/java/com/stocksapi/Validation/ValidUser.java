@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidUser {
-    String message() default "ProductOffering request must include a memberNumber or memberID (or both)";
+    String message() default "ProductOffering request must include a valid username and password";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default { };
 }
