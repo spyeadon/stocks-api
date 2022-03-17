@@ -32,4 +32,8 @@ public class StockShareService {
                 .lastModifiedDate(savedStockShare.getLastModifiedDate())
             .build();
     }
+
+    public StockShareDTO sellStock(StockShareDTO stockShareDTO) {
+        return null;
+    }
 }
