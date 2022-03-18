@@ -25,6 +25,9 @@ public class StockShareEntity {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     private String id;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private UserEntity user;
+
     private String name;
 
     private String exchange;

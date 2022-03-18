@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @Builder
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 @ValidUser
 public class UserDTO {
     private String id;
+    private Set<StockShareDTO> stockShares;
     @NotBlank(message = "Username must not be empty or null")
     private String username;
     @NotBlank(message = "First name must not be empty or null")

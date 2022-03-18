@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class StockShareDTO {
     private String id;
+    private String userId;
     private String name;
     private String symbol;
     private Double shareQuantity;
