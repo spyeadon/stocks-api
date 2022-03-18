@@ -18,7 +18,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
 
 @ExtendWith(MockitoExtension.class)
 class StockShareServiceTest {
@@ -28,6 +28,7 @@ class StockShareServiceTest {
     private UserEntity userEntity;
     private final String stockShareID = UUID.randomUUID().toString();
     private final String userID = UUID.randomUUID().toString();
+    private final Double shareQuantity = 2.76;
 
     @Mock
     private StockShareDAO stockShareDAO;
@@ -47,7 +48,7 @@ class StockShareServiceTest {
                 .userId(userID)
                 .name("Microsoft")
                 .symbol("MSFT")
-                .shareQuantity(2.76)
+                .shareQuantity(shareQuantity)
             .build();
 
         savedStockShareEntity = StockShareEntity.builder()
@@ -56,14 +57,14 @@ class StockShareServiceTest {
                 .exchange("NYSE")
                 .name("Microsoft")
                 .symbol("MSFT")
-                .shareQuantity(2.76)
+                .shareQuantity(shareQuantity)
                 .createdDate(LocalDateTime.now())
                 .lastModifiedDate(LocalDateTime.now())
             .build();
     }
 
     @Test
-    void purchaseStock_savesReceivedStockShareInDB_returnsStockSharePurchase() {
+    void purchaseStock_savesInitialStockShareInDB_returnsStockSharePurchase() {
         given(stockShareDAO.save(any(StockShareEntity.class))).willReturn(savedStockShareEntity);
         given(userDAO.getById(userID)).willReturn(userEntity);
 
@@ -79,6 +80,47 @@ class StockShareServiceTest {
         assertThat(savedStockShareDTO.getLastModifiedDate()).isBefore(LocalDateTime.now());
 
         savedStockShareEntity.setId(null);
+        savedStockShareEntity.setCreatedDate(null);
+        savedStockShareEntity.setLastModifiedDate(null);
+        then(stockShareDAO).should().save(savedStockShareEntity);
+    }
+
+    @Test
+    void purchaseStock_savesAdditionalStockShareInDB_returnsStockSharePurchaseWithMoreShares() {
+        given(userDAO.getById(userID)).willReturn(userEntity);
+
+        stockShareDTO.setId(stockShareID);
+        given(stockShareDAO.getById(stockShareID)).willReturn(savedStockShareEntity);
+
+        StockShareEntity previouslySavedStockShare = StockShareEntity.builder()
+                .id(stockShareID)
+                .user(userEntity)
+                .exchange("NYSE")
+                .name("Microsoft")
+                .symbol("MSFT")
+                .shareQuantity(shareQuantity + shareQuantity)
+                .createdDate(LocalDateTime.now())
+                .lastModifiedDate(LocalDateTime.now())
+                .build();
+        given(stockShareDAO.save(any(StockShareEntity.class))).willReturn(previouslySavedStockShare);
+
+        //when
+        StockShareDTO savedStockShareDTO = stockShareService.purchaseStock(stockShareDTO);
+
+        then(stockShareDAO).should().getById(stockShareID);
+
+        assertThat(savedStockShareDTO.getId()).isEqualTo(stockShareID);
+        assertThat(savedStockShareDTO.getUserId()).isEqualTo(userID);
+        assertThat(savedStockShareDTO.getExchange()).isEqualTo(stockShareDTO.getExchange());
+        assertThat(savedStockShareDTO.getName()).isEqualTo(stockShareDTO.getName());
+        assertThat(savedStockShareDTO.getSymbol()).isEqualTo(stockShareDTO.getSymbol());
+
+        assertThat(savedStockShareDTO.getShareQuantity()).isGreaterThan(stockShareDTO.getShareQuantity());
+        assertThat(savedStockShareDTO.getShareQuantity()).isEqualTo(previouslySavedStockShare.getShareQuantity());
+
+        assertThat(savedStockShareDTO.getCreatedDate()).isBefore(LocalDateTime.now());
+        assertThat(savedStockShareDTO.getLastModifiedDate()).isBefore(LocalDateTime.now());
+
         savedStockShareEntity.setCreatedDate(null);
         savedStockShareEntity.setLastModifiedDate(null);
         then(stockShareDAO).should().save(savedStockShareEntity);

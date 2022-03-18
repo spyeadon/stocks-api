@@ -21,7 +21,10 @@ public class StockShareController {
     @PutMapping( value = "/purchases", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<StockShareDTO> purchaseStock(@RequestBody StockShareDTO stockShare) {
         StockShareDTO savedStockShare = stockShareService.purchaseStock(stockShare);
-        return new ResponseEntity<>(savedStockShare, HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                savedStockShare,
+                stockShare.getId() != null ? HttpStatus.OK : HttpStatus.CREATED
+        );
     }
 
     @PutMapping(value = "/sales", consumes = MediaType.APPLICATION_JSON_VALUE)

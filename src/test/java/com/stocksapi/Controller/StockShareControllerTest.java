@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -61,7 +62,7 @@ class StockShareControllerTest {
     }
 
     @Test
-    void purchaseStock_whenRequestReceived_RespondsWithResourceAnd201Created() throws Exception {
+    void purchaseStock_whenRequestForInitialStockShare_RespondsWithResourceAnd201Created() throws Exception {
         given(stockShareService.purchaseStock(any(StockShareDTO.class))).willReturn(stockSharePurchase);
 
         mockMvc.perform(put("/shares/purchases")
@@ -69,6 +70,29 @@ class StockShareControllerTest {
                         .content(objectMapper.writeValueAsString(stockSharePurchase)))
                 .andExpect(content().json(objectMapper.writeValueAsString(stockSharePurchase)))
                 .andExpect(status().isCreated());
+
+        then(stockShareService).should().purchaseStock(stockSharePurchase);
+    }
+
+    @Test
+    void purchaseStock_whenRequestForAdditionalStockShares_RespondsWithResourceAnd200OK() throws Exception {
+        StockShareDTO additionalStockSharePurchase = StockShareDTO.builder()
+                .exchange(exchange)
+                .symbol(symbol)
+                .name(name)
+                .shareQuantity(purchaseShares + purchaseShares)
+            .build();
+        stockSharePurchase.setId("valid ID");
+
+        given(stockShareService.purchaseStock(stockSharePurchase)).willReturn(additionalStockSharePurchase);
+
+        mockMvc.perform(put("/shares/purchases")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(stockSharePurchase)))
+                .andExpect(content().json(objectMapper.writeValueAsString(additionalStockSharePurchase)))
+                .andExpect(status().isOk());
+
+        then(stockShareService).should().purchaseStock(stockSharePurchase);
     }
 
     @Disabled

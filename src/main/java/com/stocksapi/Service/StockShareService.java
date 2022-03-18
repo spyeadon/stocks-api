@@ -17,17 +17,24 @@ public class StockShareService {
     private final UserDAO userDAO;
 
     public StockShareDTO purchaseStock(StockShareDTO stockShareDTO) {
+        StockShareEntity savedStockShare;
         UserEntity associatedUser = userDAO.getById(stockShareDTO.getUserId());
-
-        StockShareEntity savedStockShare = stockShareDAO.save(
-            StockShareEntity.builder()
-                .exchange(stockShareDTO.getExchange())
-                .name(stockShareDTO.getName())
-                .shareQuantity(stockShareDTO.getShareQuantity())
-                .symbol(stockShareDTO.getSymbol())
-                .user(associatedUser)
-            .build()
-        );
+        if (stockShareDTO.getId() != null) {
+            StockShareEntity stockShareEntity = stockShareDAO.getById(stockShareDTO.getId());
+            Double newShareQuantity = stockShareDTO.getShareQuantity() + stockShareEntity.getShareQuantity();
+            stockShareEntity.setShareQuantity(newShareQuantity);
+            savedStockShare = stockShareDAO.save(stockShareEntity);
+        } else {
+            savedStockShare = stockShareDAO.save(
+                StockShareEntity.builder()
+                    .exchange(stockShareDTO.getExchange())
+                    .name(stockShareDTO.getName())
+                    .shareQuantity(stockShareDTO.getShareQuantity())
+                    .symbol(stockShareDTO.getSymbol())
+                    .user(associatedUser)
+                .build()
+            );
+        }
 
         return StockShareDTO.builder()
                 .id(savedStockShare.getId())
