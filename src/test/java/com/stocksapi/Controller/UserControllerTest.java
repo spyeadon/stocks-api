@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -53,30 +55,16 @@ class UserControllerTest {
     }
 
     @Test
-    void createUser_callsUserService() throws Exception {
-        UserDTO request = UserDTO.builder()
-                .firstName("tester")
-                .lastName("testerson")
-                .username("test123")
-                .password("pa55w0rd098")
-                .build();
-
-        mockMvc.perform(post("/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userRequestBody)));
-
-        Mockito.verify(userService, Mockito.times(1)).createUser(request);
-    }
-
-    @Test
-    void createUser_withValidRequestBody_willRespondWithResourceAnd200OK() throws Exception {
-        when(userService.createUser(any(UserDTO.class))).thenReturn(userRequestBody);
+    void createUser_withValidRequestBody_invokesServiceAndRespondSWithResourceAnd200OK() throws Exception {
+        given(userService.createUser(any(UserDTO.class))).willReturn(userRequestBody);
 
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequestBody)))
                 .andExpect(content().json(objectMapper.writeValueAsString(userRequestBody)))
                 .andExpect(status().isOk());
+
+        then(userService).should().createUser(userRequestBody);
     }
 
     @Test

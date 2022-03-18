@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -62,7 +62,7 @@ class StockShareControllerTest {
 
     @Test
     void purchaseStock_whenRequestReceived_RespondsWithResourceAnd201Created() throws Exception {
-        doReturn(stockSharePurchase).when(stockShareService).purchaseStock(any(StockShareDTO.class));
+        given(stockShareService.purchaseStock(any(StockShareDTO.class))).willReturn(stockSharePurchase);
 
         mockMvc.perform(put("/shares/purchases")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -81,7 +81,7 @@ class StockShareControllerTest {
                 .shareQuantity(purchaseShares - sellShares)
             .build();
 
-        doReturn(stockShareAfterSale).when(stockShareService).sellStock(stockShareSale);
+        given(stockShareService.sellStock(stockShareSale)).willReturn(stockShareAfterSale);
 
         mockMvc.perform(put("/shares/sales")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -100,7 +100,6 @@ class StockShareControllerTest {
                 .shareQuantity(0.0)
                 .build();
 
-        doReturn(stockShareAfterSale).when(stockShareService).sellStock(stockShareSale);
-
+        given(stockShareService.sellStock(stockShareSale)).willReturn(stockShareAfterSale);
     }
 }

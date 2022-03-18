@@ -16,7 +16,8 @@ import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -29,6 +30,7 @@ class UserServiceTest {
 
     private UserDTO unsavedUserDTO;
     private UserEntity savedUser;
+    private final String id = UUID.randomUUID().toString();
 
     @BeforeEach
     void setup() {
@@ -40,7 +42,7 @@ class UserServiceTest {
                 .build();
 
         savedUser = UserEntity.builder()
-                .id(UUID.randomUUID().toString())
+                .id(id)
                 .firstName("tester")
                 .lastName("testerson")
                 .username("test123")
@@ -52,8 +54,7 @@ class UserServiceTest {
 
     @Test
     void createUser_savesWithUserDAO_returnsSavedUser() {
-
-        when(userDAO.save(any(UserEntity.class))).thenReturn(savedUser);
+        given(userDAO.save(any(UserEntity.class))).willReturn(savedUser);
 
         UserDTO savedUserDTO = userService.createUser(unsavedUserDTO);
 
@@ -68,7 +69,7 @@ class UserServiceTest {
         savedUser.setId(null);
         savedUser.setCreatedDate(null);
         savedUser.setLastModifiedDate(null);
-        verify(userDAO, times(1)).save(savedUser);
+        then(userDAO).should().save(savedUser);
     }
 
     private final static Pattern UUID_REGEX_PATTERN =

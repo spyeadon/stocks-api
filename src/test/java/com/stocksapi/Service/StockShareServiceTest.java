@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +53,7 @@ class StockShareServiceTest {
 
     @Test
     void purchaseStock_savesReceivedStockShareInDB_returnsStockSharePurchase() {
-        doReturn(savedStockShareEntity).when(stockShareDAO).save(any(StockShareEntity.class));
+        given(stockShareDAO.save(any(StockShareEntity.class))).willReturn(savedStockShareEntity);
 
         StockShareDTO savedStockShareDTO = stockShareService.purchaseStock(stockShareDTO);
 
@@ -66,6 +68,6 @@ class StockShareServiceTest {
         savedStockShareEntity.setId(null);
         savedStockShareEntity.setCreatedDate(null);
         savedStockShareEntity.setLastModifiedDate(null);
-        verify(stockShareDAO, times(1)).save(savedStockShareEntity);
+        then(stockShareDAO).should().save(savedStockShareEntity);
     }
 }
