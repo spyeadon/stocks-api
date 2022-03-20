@@ -9,3 +9,5 @@ Backend to retrieve stock tickers, prices and other market information so that u
 - H2
 - Java 16
 - Lombok
+- BDD Mockito
+- Spring Data JPA

@@ -92,7 +92,7 @@ class StockShareServiceTest {
         stockShareDTO.setId(stockShareID);
         given(stockShareDAO.getById(stockShareID)).willReturn(savedStockShareEntity);
 
-        StockShareEntity previouslySavedStockShare = StockShareEntity.builder()
+        StockShareEntity updatedStockShareEntity = StockShareEntity.builder()
                 .id(stockShareID)
                 .user(userEntity)
                 .exchange("NYSE")
@@ -102,7 +102,7 @@ class StockShareServiceTest {
                 .createdDate(LocalDateTime.now())
                 .lastModifiedDate(LocalDateTime.now())
                 .build();
-        given(stockShareDAO.save(any(StockShareEntity.class))).willReturn(previouslySavedStockShare);
+        given(stockShareDAO.save(any(StockShareEntity.class))).willReturn(updatedStockShareEntity);
 
         //when
         StockShareDTO savedStockShareDTO = stockShareService.purchaseStock(stockShareDTO);
@@ -116,13 +116,9 @@ class StockShareServiceTest {
         assertThat(savedStockShareDTO.getSymbol()).isEqualTo(stockShareDTO.getSymbol());
 
         assertThat(savedStockShareDTO.getShareQuantity()).isGreaterThan(stockShareDTO.getShareQuantity());
-        assertThat(savedStockShareDTO.getShareQuantity()).isEqualTo(previouslySavedStockShare.getShareQuantity());
+        assertThat(savedStockShareDTO.getShareQuantity()).isEqualTo(updatedStockShareEntity.getShareQuantity());
 
         assertThat(savedStockShareDTO.getCreatedDate()).isBefore(LocalDateTime.now());
         assertThat(savedStockShareDTO.getLastModifiedDate()).isBefore(LocalDateTime.now());
-
-        savedStockShareEntity.setCreatedDate(null);
-        savedStockShareEntity.setLastModifiedDate(null);
-        then(stockShareDAO).should().save(savedStockShareEntity);
     }
 }
