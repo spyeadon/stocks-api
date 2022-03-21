@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stocksapi.DTO.StockShareDTO;
 import com.stocksapi.Service.StockShareService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -95,7 +94,6 @@ class StockShareControllerTest {
         then(stockShareService).should().purchaseStock(stockSharePurchase);
     }
 
-    @Disabled
     @Test
     void sellStock_whenRequestForPartialSaleIsReceived_RespondsWithUpdatedResourceAnd200OK() throws Exception {
         StockShareDTO stockShareAfterSale = StockShareDTO.builder()
@@ -114,9 +112,8 @@ class StockShareControllerTest {
                 .andExpect(content().json(objectMapper.writeValueAsString(stockShareAfterSale)));
     }
 
-    @Disabled
     @Test
-    void sellStock_whenRequestForFullSaleIsReceived_RespondsWith204NoContent() {
+    void sellStock_whenRequestForFullSaleIsReceived_RespondsWith204NoContent() throws Exception {
         StockShareDTO stockShareAfterSale = StockShareDTO.builder()
                 .exchange(exchange)
                 .symbol(symbol)
@@ -125,5 +122,10 @@ class StockShareControllerTest {
                 .build();
 
         given(stockShareService.sellStock(stockShareSale)).willReturn(stockShareAfterSale);
+
+        mockMvc.perform(put("/shares/sales")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(stockShareSale)))
+                .andExpect(status().isNoContent());
     }
 }

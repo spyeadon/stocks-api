@@ -28,8 +28,13 @@ public class StockShareController {
     }
 
     @PutMapping(value = "/sales", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<StockShareDTO> sellStock(@RequestBody StockShareDTO stockShareSale) {
+    public ResponseEntity<?> sellStock(@RequestBody StockShareDTO stockShareSale) {
         StockShareDTO remainingStockShare = stockShareService.sellStock(stockShareSale);
-        return new ResponseEntity<>(remainingStockShare, HttpStatus.OK);
+        ResponseEntity<?> response;
+        if (remainingStockShare == null)
+            response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        else
+            response = new ResponseEntity<>(remainingStockShare, HttpStatus.OK);
+        return response;
     }
 }

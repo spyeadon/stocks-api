@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class StockShareServiceTest {
@@ -108,17 +109,72 @@ class StockShareServiceTest {
         StockShareDTO savedStockShareDTO = stockShareService.purchaseStock(stockShareDTO);
 
         then(stockShareDAO).should().getById(stockShareID);
+        then(stockShareDAO).should().save(any(StockShareEntity.class));
 
         assertThat(savedStockShareDTO.getId()).isEqualTo(stockShareID);
         assertThat(savedStockShareDTO.getUserId()).isEqualTo(userID);
         assertThat(savedStockShareDTO.getExchange()).isEqualTo(stockShareDTO.getExchange());
         assertThat(savedStockShareDTO.getName()).isEqualTo(stockShareDTO.getName());
         assertThat(savedStockShareDTO.getSymbol()).isEqualTo(stockShareDTO.getSymbol());
-
         assertThat(savedStockShareDTO.getShareQuantity()).isGreaterThan(stockShareDTO.getShareQuantity());
         assertThat(savedStockShareDTO.getShareQuantity()).isEqualTo(updatedStockShareEntity.getShareQuantity());
-
         assertThat(savedStockShareDTO.getCreatedDate()).isBefore(LocalDateTime.now());
         assertThat(savedStockShareDTO.getLastModifiedDate()).isBefore(LocalDateTime.now());
+    }
+
+    @Test
+    void sellStock_whenPartialStockSale_savesUpdateAndRespondsWithResource() {
+        Double previousShareQuantity = 6.8;
+        StockShareEntity previouslySavedStockShare = StockShareEntity.builder()
+                .id(stockShareID)
+                .user(userEntity)
+                .exchange("NYSE")
+                .name("Microsoft")
+                .symbol("MSFT")
+                .shareQuantity(previousShareQuantity)
+                .createdDate(LocalDateTime.now())
+                .lastModifiedDate(LocalDateTime.now())
+            .build();
+        given(stockShareDAO.getById(stockShareID)).willReturn(previouslySavedStockShare);
+
+        savedStockShareEntity.setShareQuantity(previousShareQuantity - shareQuantity);
+        given(stockShareDAO.save(any(StockShareEntity.class))).willReturn(savedStockShareEntity);
+
+        stockShareDTO.setId(stockShareID);
+        stockShareDTO.setLastModifiedDate(LocalDateTime.now());
+        stockShareDTO.setCreatedDate(LocalDateTime.now());
+
+        //when
+        StockShareDTO savedStockShareDTO = stockShareService.sellStock(stockShareDTO);
+
+        then(stockShareDAO).should().getById(stockShareID);
+        then(stockShareDAO).should().save(any(StockShareEntity.class));
+
+        assertThat(savedStockShareDTO.getShareQuantity()).isLessThan(previousShareQuantity);
+        assertThat(savedStockShareDTO.getShareQuantity()).isEqualTo(previousShareQuantity - shareQuantity);
+        assertThat(savedStockShareDTO.getId()).isEqualTo(stockShareDTO.getId());
+        assertThat(savedStockShareDTO.getUserId()).isEqualTo(stockShareDTO.getUserId());
+        assertThat(savedStockShareDTO.getName()).isEqualTo(stockShareDTO.getName());
+        assertThat(savedStockShareDTO.getSymbol()).isEqualTo(stockShareDTO.getSymbol());
+        assertThat(savedStockShareDTO.getExchange()).isEqualTo(stockShareDTO.getExchange());
+        assertThat(savedStockShareDTO.getCreatedDate()).isBefore(stockShareDTO.getCreatedDate());
+        assertThat(savedStockShareDTO.getLastModifiedDate()).isBefore(stockShareDTO.getLastModifiedDate());
+    }
+
+    @Test
+    void sellStock_whenFullStockSale_savesUpdateAndRespondsWithResource() {
+        given(stockShareDAO.getById(stockShareID)).willReturn(savedStockShareEntity);
+
+        stockShareDTO.setId(stockShareID);
+        stockShareDTO.setLastModifiedDate(LocalDateTime.now());
+        stockShareDTO.setCreatedDate(LocalDateTime.now());
+
+        //when
+        StockShareDTO savedStockShareDTO = stockShareService.sellStock(stockShareDTO);
+
+        then(stockShareDAO).should(times(0)).save(any(StockShareEntity.class));
+        then(stockShareDAO).should().deleteById(stockShareID);
+
+        assertThat(savedStockShareDTO).isNull();
     }
 }

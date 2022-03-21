@@ -49,6 +49,24 @@ public class StockShareService {
     }
 
     public StockShareDTO sellStock(StockShareDTO stockShareDTO) {
-        return null;
+        StockShareEntity existingStockShare = stockShareDAO.getById(stockShareDTO.getId());
+        double subtractedShareQuantity = existingStockShare.getShareQuantity() - stockShareDTO.getShareQuantity();
+        if (subtractedShareQuantity > 0) {
+            existingStockShare.setShareQuantity(subtractedShareQuantity);
+            StockShareEntity savedStockShare = stockShareDAO.save(existingStockShare);
+            return StockShareDTO.builder()
+                    .id(savedStockShare.getId())
+                    .userId(stockShareDTO.getUserId())
+                    .exchange(savedStockShare.getExchange())
+                    .name(savedStockShare.getName())
+                    .shareQuantity(savedStockShare.getShareQuantity())
+                    .symbol(savedStockShare.getSymbol())
+                    .createdDate(savedStockShare.getCreatedDate())
+                    .lastModifiedDate(savedStockShare.getLastModifiedDate())
+                .build();
+        } else {
+            stockShareDAO.deleteById(stockShareDTO.getId());
+            return null;
+        }
     }
 }
