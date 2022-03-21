@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
                         .message(exception.getMessage())
                         .exceptionType(exception.getClass().getSimpleName())
                     .build(),
-                HttpStatus.INTERNAL_SERVER_ERROR
+                exception.getStatus()
         );
     }
 

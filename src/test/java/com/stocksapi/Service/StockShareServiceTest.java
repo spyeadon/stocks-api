@@ -1,6 +1,7 @@
 package com.stocksapi.Service;
 
 import com.stocksapi.DTO.StockShareDTO;
+import com.stocksapi.Exception.APIException;
 import com.stocksapi.Persistence.DAO.StockShareDAO;
 import com.stocksapi.Persistence.DAO.UserDAO;
 import com.stocksapi.Persistence.Entity.StockShareEntity;
@@ -11,15 +12,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class StockShareServiceTest {
@@ -172,9 +173,25 @@ class StockShareServiceTest {
         //when
         StockShareDTO savedStockShareDTO = stockShareService.sellStock(stockShareDTO);
 
-        then(stockShareDAO).should(times(0)).save(any(StockShareEntity.class));
+        then(stockShareDAO).should(never()).save(any(StockShareEntity.class));
         then(stockShareDAO).should().deleteById(stockShareID);
 
         assertThat(savedStockShareDTO).isNull();
+    }
+
+    @Test
+    void sellStock_whenRequestIsGTExistingShare_throwsApiException() {
+        stockShareDTO.setId(stockShareID);
+        savedStockShareEntity.setShareQuantity(shareQuantity - 1);
+        given(stockShareDAO.getById(stockShareID)).willReturn(savedStockShareEntity);
+
+        String exceptionMessage = "Stock sale quantity cannot exceed existing stock share quantity.";
+        HttpStatus exceptionStatus = HttpStatus.BAD_REQUEST;
+
+
+        APIException exception = assertThrows(APIException.class, () -> stockShareService.sellStock(stockShareDTO));
+
+        assertThat(exception.getMessage()).isEqualTo(exceptionMessage);
+        assertThat(exception.getStatus()).isEqualTo(exceptionStatus);
     }
 }

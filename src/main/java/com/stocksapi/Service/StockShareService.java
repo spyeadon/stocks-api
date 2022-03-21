@@ -1,11 +1,13 @@
 package com.stocksapi.Service;
 
 import com.stocksapi.DTO.StockShareDTO;
+import com.stocksapi.Exception.APIException;
 import com.stocksapi.Persistence.DAO.StockShareDAO;
 import com.stocksapi.Persistence.DAO.UserDAO;
 import com.stocksapi.Persistence.Entity.StockShareEntity;
 import com.stocksapi.Persistence.Entity.UserEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -64,6 +66,8 @@ public class StockShareService {
                     .createdDate(savedStockShare.getCreatedDate())
                     .lastModifiedDate(savedStockShare.getLastModifiedDate())
                 .build();
+        } else if (subtractedShareQuantity < 0) {
+            throw new APIException("Stock sale quantity cannot exceed existing stock share quantity.", HttpStatus.BAD_REQUEST);
         } else {
             stockShareDAO.deleteById(stockShareDTO.getId());
             return null;

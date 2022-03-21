@@ -28,7 +28,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void handleAPIException_respondsWith500InternalServerError() {
-        APIException exception = new APIException("An Internal Server Error occurred!");
+        APIException exception = new APIException("An Internal Server Error occurred!", HttpStatus.INTERNAL_SERVER_ERROR);
 
         ResponseEntity<ErrorResponse> response = globalExceptionHandler.handleAPIException(exception);
 

@@ -114,14 +114,7 @@ class StockShareControllerTest {
 
     @Test
     void sellStock_whenRequestForFullSaleIsReceived_RespondsWith204NoContent() throws Exception {
-        StockShareDTO stockShareAfterSale = StockShareDTO.builder()
-                .exchange(exchange)
-                .symbol(symbol)
-                .name(name)
-                .shareQuantity(0.0)
-                .build();
-
-        given(stockShareService.sellStock(stockShareSale)).willReturn(stockShareAfterSale);
+        given(stockShareService.sellStock(stockShareSale)).willReturn(null);
 
         mockMvc.perform(put("/shares/sales")
                         .contentType(MediaType.APPLICATION_JSON)
