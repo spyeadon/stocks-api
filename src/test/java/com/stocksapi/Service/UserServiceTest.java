@@ -66,10 +66,7 @@ class UserServiceTest {
         assertThat(savedUserDTO.getCreatedDate()).isBefore(LocalDateTime.now());
         assertThat(savedUserDTO.getLastModifiedDate()).isBefore(LocalDateTime.now());
 
-        savedUser.setId(null);
-        savedUser.setCreatedDate(null);
-        savedUser.setLastModifiedDate(null);
-        then(userDAO).should().save(savedUser);
+        then(userDAO).should().save(any(UserEntity.class));
     }
 
     private final static Pattern UUID_REGEX_PATTERN =

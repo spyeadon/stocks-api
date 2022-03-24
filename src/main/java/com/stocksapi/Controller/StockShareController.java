@@ -6,10 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,13 +27,20 @@ public class StockShareController {
     }
 
     @PutMapping(value = "/sales", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> sellStock(@RequestBody StockShareDTO stockShareSale) {
+    public ResponseEntity<StockShareDTO> sellStock(@RequestBody StockShareDTO stockShareSale) {
         StockShareDTO remainingStockShare = stockShareService.sellStock(stockShareSale);
-        ResponseEntity<?> response;
         if (remainingStockShare == null)
-            response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return  new ResponseEntity<>(HttpStatus.NO_CONTENT);
         else
-            response = new ResponseEntity<>(remainingStockShare, HttpStatus.OK);
-        return response;
+            return  new ResponseEntity<>(remainingStockShare, HttpStatus.OK);
+    }
+
+    @GetMapping("/portfolio/{userID}")
+    public ResponseEntity<Set<StockShareDTO>> getPortfolio(@PathVariable String userID) {
+        Set<StockShareDTO> portfolio = stockShareService.getPortfolio(userID);
+        if (portfolio.size() == 0)
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        else
+            return new ResponseEntity<>(portfolio, HttpStatus.OK);
     }
 }

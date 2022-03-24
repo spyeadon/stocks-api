@@ -13,9 +13,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Set;
+import java.util.UUID;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,6 +38,7 @@ class StockShareControllerTest {
     private final String name = "Microsoft";
     private final Double purchaseShares = 2.76;
     private final Double sellShares = 1.01;
+    private final String userId = UUID.randomUUID().toString();
 
     @InjectMocks
     private StockShareController stockShareController;
@@ -119,6 +124,25 @@ class StockShareControllerTest {
         mockMvc.perform(put("/shares/sales")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(stockShareSale)))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void getPortfolio_whenRequestForUsersStockPortfolioReceived_RespondsWithListAnd200OK() throws Exception {
+        Set<StockShareDTO> portfolio = Set.of(stockSharePurchase, stockShareSale);
+        given(stockShareService.getPortfolio(userId)).willReturn(portfolio);
+
+        mockMvc.perform(get("/shares/portfolio/" + userId))
+                .andExpect(status().isOk())
+                .andExpect(content().json(objectMapper.writeValueAsString(portfolio)));
+    }
+
+    @Test
+    void getPortfolio_whenNoStockSharesExistForUserId_RespondsWith204NoContent() throws Exception {
+        Set<StockShareDTO> portfolio = Set.of();
+        given(stockShareService.getPortfolio(userId)).willReturn(portfolio);
+
+        mockMvc.perform(get("/shares/portfolio/" + userId))
                 .andExpect(status().isNoContent());
     }
 }

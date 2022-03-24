@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class StockShareService {
@@ -72,5 +75,23 @@ public class StockShareService {
             stockShareDAO.deleteById(stockShareDTO.getId());
             return null;
         }
+    }
+
+    public Set<StockShareDTO> getPortfolio(String userId) {
+        Set<StockShareEntity> stockShareEntities = stockShareDAO.findAllByUserId(userId);
+        if (stockShareEntities.size() > 0)
+            return stockShareEntities.stream()
+                    .map(share -> StockShareDTO.builder()
+                            .id(share.getId())
+                            .userId(share.getUser().getId())
+                            .shareQuantity(share.getShareQuantity())
+                            .exchange(share.getExchange())
+                            .name(share.getName())
+                            .createdDate(share.getCreatedDate())
+                            .lastModifiedDate(share.getLastModifiedDate())
+                            .symbol(share.getSymbol())
+                        .build()
+                    ).collect(Collectors.toSet());
+        else return Set.of();
     }
 }

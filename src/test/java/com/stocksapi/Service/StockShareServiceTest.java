@@ -6,6 +6,7 @@ import com.stocksapi.Persistence.DAO.StockShareDAO;
 import com.stocksapi.Persistence.DAO.UserDAO;
 import com.stocksapi.Persistence.Entity.StockShareEntity;
 import com.stocksapi.Persistence.Entity.UserEntity;
+import com.stocksapi.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +33,8 @@ class StockShareServiceTest {
     private final String stockShareID = UUID.randomUUID().toString();
     private final String userID = UUID.randomUUID().toString();
     private final Double shareQuantity = 2.76;
+
+    private final TestUtils testUtils = new TestUtils();
 
     @Mock
     private StockShareDAO stockShareDAO;
@@ -81,10 +85,7 @@ class StockShareServiceTest {
         assertThat(savedStockShareDTO.getCreatedDate()).isBefore(LocalDateTime.now());
         assertThat(savedStockShareDTO.getLastModifiedDate()).isBefore(LocalDateTime.now());
 
-        savedStockShareEntity.setId(null);
-        savedStockShareEntity.setCreatedDate(null);
-        savedStockShareEntity.setLastModifiedDate(null);
-        then(stockShareDAO).should().save(savedStockShareEntity);
+        then(stockShareDAO).should().save(any(StockShareEntity.class));
     }
 
     @Test
@@ -188,10 +189,37 @@ class StockShareServiceTest {
         String exceptionMessage = "Stock sale quantity cannot exceed existing stock share quantity.";
         HttpStatus exceptionStatus = HttpStatus.BAD_REQUEST;
 
-
         APIException exception = assertThrows(APIException.class, () -> stockShareService.sellStock(stockShareDTO));
 
         assertThat(exception.getMessage()).isEqualTo(exceptionMessage);
         assertThat(exception.getStatus()).isEqualTo(exceptionStatus);
+    }
+
+    @Test
+    void getPortfolio_whenRequestIsForUsersPortfolio_RespondsWithSetOfStocks() {
+        StockShareEntity stockShare1 = testUtils.stockShareEntityFactory(UUID.randomUUID().toString(), userID);
+        StockShareEntity stockShare2 = testUtils.stockShareEntityFactory(UUID.randomUUID().toString(), userID);
+
+        Set<StockShareEntity> stockShareEntityPortfolio = Set.of(stockShare1, stockShare2);
+        given(stockShareDAO.findAllByUserId(userID)).willReturn(stockShareEntityPortfolio);
+
+        //when
+        Set<StockShareDTO> stockShareDTOPortfolio = stockShareService.getPortfolio(userID);
+
+        then(stockShareDAO).should().findAllByUserId(userID);
+        assertThat(stockShareDTOPortfolio.size()).isEqualTo(2);
+    }
+
+    @Test
+    void getPortfolio_whenUserPortfolioIsEmpty_RespondsWithEmptySet() {
+        Set<StockShareEntity> stockShareEntityPortfolio = Set.of();
+
+        given(stockShareDAO.findAllByUserId(userID)).willReturn(stockShareEntityPortfolio);
+
+        //when
+        Set<StockShareDTO> emptyStockSharePortfolio = stockShareService.getPortfolio(userID);
+
+        then(stockShareDAO).should().findAllByUserId(userID);
+        assertThat(emptyStockSharePortfolio.size()).isEqualTo(0);
     }
 }
