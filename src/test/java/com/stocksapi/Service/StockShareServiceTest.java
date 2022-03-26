@@ -85,11 +85,34 @@ class StockShareServiceTest {
         assertThat(savedStockShareDTO.getCreatedDate()).isBefore(LocalDateTime.now());
         assertThat(savedStockShareDTO.getLastModifiedDate()).isBefore(LocalDateTime.now());
 
+        then(stockShareDAO).should(never()).getById(anyString());
         then(stockShareDAO).should().save(any(StockShareEntity.class));
     }
 
     @Test
-    void purchaseStock_savesAdditionalStockShareInDB_returnsStockSharePurchaseWithMoreShares() {
+    void purchaseStock_whenAlreadyPurchasedStockRequestWithNoID_addsSharesToExistingStock() {
+        given(userDAO.getById(userID)).willReturn(userEntity);
+        given(stockShareDAO.getBySymbolAndUserId(stockShareDTO.getSymbol(), userID)).willReturn(java.util.Optional.ofNullable(savedStockShareEntity));
+        given(stockShareDAO.save(any(StockShareEntity.class))).willReturn(savedStockShareEntity);
+
+        StockShareDTO savedStockShareDTO = stockShareService.purchaseStock(stockShareDTO);
+
+        assertThat(savedStockShareDTO.getId()).isEqualTo(stockShareID);
+        assertThat(savedStockShareDTO.getUserId()).isEqualTo(userID);
+        assertThat(savedStockShareDTO.getExchange()).isEqualTo(stockShareDTO.getExchange());
+        assertThat(savedStockShareDTO.getName()).isEqualTo(stockShareDTO.getName());
+        assertThat(savedStockShareDTO.getSymbol()).isEqualTo(stockShareDTO.getSymbol());
+        assertThat(savedStockShareDTO.getShareQuantity()).isEqualTo(shareQuantity * 2);
+        assertThat(savedStockShareDTO.getCreatedDate()).isBefore(LocalDateTime.now());
+        assertThat(savedStockShareDTO.getLastModifiedDate()).isBefore(LocalDateTime.now());
+
+        then(stockShareDAO).should(never()).getById(anyString());
+        then(stockShareDAO).should().getBySymbolAndUserId(stockShareDTO.getSymbol(), stockShareDTO.getUserId());
+        then(stockShareDAO).should().save(any(StockShareEntity.class));
+    }
+
+    @Test
+    void purchaseStock_savesIncreasedStockShareInDB_returnsStockSharePurchaseWithMoreShares() {
         given(userDAO.getById(userID)).willReturn(userEntity);
 
         stockShareDTO.setId(stockShareID);
@@ -111,6 +134,7 @@ class StockShareServiceTest {
         StockShareDTO savedStockShareDTO = stockShareService.purchaseStock(stockShareDTO);
 
         then(stockShareDAO).should().getById(stockShareID);
+        then(stockShareDAO).should(never()).getBySymbolAndUserId(anyString(), anyString());
         then(stockShareDAO).should().save(any(StockShareEntity.class));
 
         assertThat(savedStockShareDTO.getId()).isEqualTo(stockShareID);

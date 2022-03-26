@@ -22,15 +22,15 @@ public class StockShareService {
     private final UserDAO userDAO;
 
     public StockShareDTO purchaseStock(StockShareDTO stockShareDTO) {
-        StockShareEntity savedStockShare;
+        StockShareEntity toSaveStockShare;
+        StockShareEntity savedStockShareEntity = findExistingStockShare(stockShareDTO);
         UserEntity associatedUser = userDAO.getById(stockShareDTO.getUserId());
-        if (stockShareDTO.getId() != null) {
-            StockShareEntity stockShareEntity = stockShareDAO.getById(stockShareDTO.getId());
-            Double newShareQuantity = stockShareDTO.getShareQuantity() + stockShareEntity.getShareQuantity();
-            stockShareEntity.setShareQuantity(newShareQuantity);
-            savedStockShare = stockShareDAO.save(stockShareEntity);
+        if (savedStockShareEntity != null) {
+            Double newShareQuantity = stockShareDTO.getShareQuantity() + savedStockShareEntity.getShareQuantity();
+            savedStockShareEntity.setShareQuantity(newShareQuantity);
+            toSaveStockShare = stockShareDAO.save(savedStockShareEntity);
         } else {
-            savedStockShare = stockShareDAO.save(
+            toSaveStockShare = stockShareDAO.save(
                 StockShareEntity.builder()
                     .exchange(stockShareDTO.getExchange())
                     .name(stockShareDTO.getName())
@@ -42,15 +42,23 @@ public class StockShareService {
         }
 
         return StockShareDTO.builder()
-                .id(savedStockShare.getId())
+                .id(toSaveStockShare.getId())
                 .userId(associatedUser.getId())
-                .exchange(savedStockShare.getExchange())
-                .name(savedStockShare.getName())
-                .shareQuantity(savedStockShare.getShareQuantity())
-                .symbol(savedStockShare.getSymbol())
-                .createdDate(savedStockShare.getCreatedDate())
-                .lastModifiedDate(savedStockShare.getLastModifiedDate())
+                .exchange(toSaveStockShare.getExchange())
+                .name(toSaveStockShare.getName())
+                .shareQuantity(toSaveStockShare.getShareQuantity())
+                .symbol(toSaveStockShare.getSymbol())
+                .createdDate(toSaveStockShare.getCreatedDate())
+                .lastModifiedDate(toSaveStockShare.getLastModifiedDate())
             .build();
+    }
+
+    protected StockShareEntity findExistingStockShare(StockShareDTO stockShareDTO) {
+        if (stockShareDTO.getId() != null)
+            return stockShareDAO.getById(stockShareDTO.getId());
+        else
+            return stockShareDAO.getBySymbolAndUserId(stockShareDTO.getSymbol(), stockShareDTO.getUserId())
+                .orElse(null);
     }
 
     public StockShareDTO sellStock(StockShareDTO stockShareDTO) {

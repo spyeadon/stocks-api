@@ -3,9 +3,11 @@ package com.stocksapi;
 import com.stocksapi.DTO.StockShareDTO;
 import com.stocksapi.Persistence.Entity.StockShareEntity;
 import com.stocksapi.Persistence.Entity.UserEntity;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 public class TestUtils {
 
     private final String exchange = "NYSE";
