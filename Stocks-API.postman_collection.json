@@ -1,0 +1,229 @@
+{
+	"info": {
+		"_postman_id": "5903b8f5-79ed-4faa-8e87-26dab051507b",
+		"name": "Stocks-API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"userID\", jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"username123\",\n    \"firstName\": \"john\",\n    \"lastName\": \"smith\",\n    \"password\": \"pa55w0rd12345\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{stocks-api-url}}/users",
+					"host": [
+						"{{stocks-api-url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Purchase Initial Stock Share",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"stockShareID\", jsonData.id);",
+							"postman.setEnvironmentVariable(\"shareQuantity\", jsonData.shareQuantity);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Apple\",\n    \"symbol\": \"APPL\",\n    \"exchange\": \"NYSE\",\n    \"shareQuantity\": 4.56,\n    \"userId\": \"{{userID}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{stocks-api-url}}/shares/purchases",
+					"host": [
+						"{{stocks-api-url}}"
+					],
+					"path": [
+						"shares",
+						"purchases"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Purchase Additional Stock Shares",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);",
+							"postman.setEnvironmentVariable(\"stockShareID\", jsonData.id);",
+							"postman.setEnvironmentVariable(\"shareQuantity\", jsonData.shareQuantity);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{stockShareID}}\",\n    \"name\": \"Apple\",\n    \"symbol\": \"APPL\",\n    \"exchange\": \"NYSE\",\n    \"shareQuantity\": 1.0,\n    \"userId\": \"{{userID}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{stocks-api-url}}/shares/purchases",
+					"host": [
+						"{{stocks-api-url}}"
+					],
+					"path": [
+						"shares",
+						"purchases"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sell Stock Share",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (responseBody) {",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    if (jsonData.id !== null) postman.setEnvironmentVariable(\"stockShareID\", jsonData.id);",
+							"    if (jsonData.shareQuantity != null) postman.setEnvironmentVariable(\"shareQuantity\", jsonData.shareQuantity);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{stockShareID}}\",\n    \"name\": \"Apple\",\n    \"symbol\": \"APPL\",\n    \"exchange\": \"NYSE\",\n    \"shareQuantity\": 1.5,\n    \"userId\": \"{{userID}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{stocks-api-url}}/shares/sales",
+					"host": [
+						"{{stocks-api-url}}"
+					],
+					"path": [
+						"shares",
+						"sales"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sell Full Stock Share",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (responseBody) {",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    if (jsonData.id != null) postman.setEnvironmentVariable(\"stockShareID\", jsonData.id);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{stockShareID}}\",\n    \"name\": \"Apple\",\n    \"symbol\": \"APPL\",\n    \"exchange\": \"NYSE\",\n    \"shareQuantity\": {{shareQuantity}},\n    \"userId\": \"{{userID}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{stocks-api-url}}/shares/sales",
+					"host": [
+						"{{stocks-api-url}}"
+					],
+					"path": [
+						"shares",
+						"sales"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User Stock Portfolio",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{stocks-api-url}}/shares/portfolio/{{userID}}",
+					"host": [
+						"{{stocks-api-url}}"
+					],
+					"path": [
+						"shares",
+						"portfolio",
+						"{{userID}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
